@@ -11,12 +11,14 @@ on:
     paths:
       - entrypoint.sh
       - Containerfile
+      - .github/workflows/build.yml
   push:
     branches:
       - main
     paths:
       - entrypoint.sh
       - Containerfile
+      - .github/workflows/build.yml
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
