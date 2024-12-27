@@ -16,8 +16,8 @@ function wait_for_process () {
   local waited_sec=0
 
   while ! pgrep "$process_name" >/dev/null && ((waited_sec < max_time_wait)); do
-    log "Process $process_name is not running yet. Retrying in 1 seconds"
-    log "Waited $waited_sec seconds of $max_time_wait seconds"
+    log 'INFO' "Process $process_name is not running yet. Retrying in 1 seconds"
+    log 'INFO' "Waited $waited_sec seconds of $max_time_wait seconds"
     sleep 1
     ((waited_sec=waited_sec+1))
     if ((waited_sec >= max_time_wait)); then
