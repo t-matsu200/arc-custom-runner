@@ -1,0 +1,63 @@
+name: Publish container image
+run-name: ${{ github.workflow }} ${{ github.event_name == 'push' && '' || github.event.pull_request.title }}
+on:
+  pull_request:
+    types:
+      - opened
+      - reopened
+      - synchronize
+    branches:
+      - main
+    paths:
+      - entrypoint.sh
+      - Containerfile
+  push:
+    branches:
+      - main
+    paths:
+      - entrypoint.sh
+      - Containerfile
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  image-tag: 2.321.0
+
+jobs:
+  publish-container-image:
+    name: Publish container image
+    runs-on: ubuntu-24.04
+    timeout-minutes: 90
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v3
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Login Docker Registry
+        if: ${{ github.event_name == 'push' }}
+        uses: docker/login-action@v3
+        with:
+          registry: docker.io
+          username: ${{ secrets.DOCKER_REGISTRY_USER }}
+          password: ${{ secrets.DOCKER_REGISTRY_PASSWORD }}
+
+      - name: Build and Push
+        uses: docker/build-push-action@v6
+        env:
+          DOCKER_BUILD_SUMMARY: false
+        with:
+          file: ./Dockerfile
+          push: ${{ github.event_name == 'push' }}
+          tags: tmatsu200/arc-custom-runner:${{ env.image-tag }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+          platforms: "linux/arm64,linux/amd64"
