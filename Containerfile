@@ -4,7 +4,11 @@ USER root
 
 RUN apt-get update -y \
     && add-apt-repository -y ppa:git-core/ppa \
-    && apt-get install -y --no-install-recommends git curl wget ca-certificates unzip jq sshpass openssh-client iptables \
+    && apt-get install -y --no-install-recommends git curl wget ca-certificates unzip jq sshpass openssh-client iptables
+
+# nodejsのインストール
+RUN curl -fsSL https://deb.nodesource.com/setup_lts.x | bash - \
+    && apt-get install -y nodejs \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 
