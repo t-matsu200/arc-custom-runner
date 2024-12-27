@@ -3,7 +3,8 @@ FROM ghcr.io/actions/actions-runner:2.321.0
 USER root
 
 RUN apt-get update -y \
-    && apt-get install -y git curl wget ca-certificates unzip jq sshpass openssh-client \
+    && add-apt-repository -y ppa:git-core/ppa \
+    && apt-get install -y --no-install-recommends git curl wget ca-certificates unzip jq sshpass openssh-client iptables \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 

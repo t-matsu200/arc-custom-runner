@@ -7,7 +7,7 @@ log() {
   level=$1
   msg=$2
   instant=$(date '+%F %T.%-3N' 2>/dev/null || :)
-  printf -- '[%s] [%s] --- %s\n' "$instant" "$level" "$msg" 1>&2 || :
+  echo "[$instant] [$level] --- $msg"
 }
 
 function wait_for_process () {
@@ -28,7 +28,8 @@ function wait_for_process () {
 }
 
 log 'INFO' 'Starting Docker daemon'
-sudo /usr/bin/dockerd --host=unix:///var/run/docker.sock --group=123 &
+DOCKER_GID=$(getent group docker | cut -d: -f3)
+sudo /usr/bin/dockerd --host=unix:///var/run/docker.sock --group=$DOCKER_GID &
 
 log 'INFO' 'Waiting for processes to be running...'
 processes=(dockerd)
@@ -47,5 +48,3 @@ SCRIPT
 
 RUNNER_INIT_PID=$!
 wait $RUNNER_INIT_PID
-
-trap - TERM
