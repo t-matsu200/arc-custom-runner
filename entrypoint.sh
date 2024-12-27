@@ -28,7 +28,7 @@ function wait_for_process () {
 }
 
 log 'INFO' 'Starting Docker daemon'
-sudo /usr/bin/dockerd &
+sudo /usr/bin/dockerd --host=unix:///var/run/docker.sock --group=123 &
 
 log 'INFO' 'Waiting for processes to be running...'
 processes=(dockerd)
