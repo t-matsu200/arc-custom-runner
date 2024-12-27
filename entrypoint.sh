@@ -6,8 +6,8 @@ log() {
   local instant level msg
   level=$1
   msg=$2
-  instant=$(date '+%F %T.%-3N' 2>/dev/null || :)
-  echo "[$instant] [$level] --- $msg"
+  instant=$(date -u '+%Y-%m-%d %H:%M:%SZ')
+  echo "[RUNNER $instant $level entrypoint.sh] $msg"
 }
 
 function wait_for_process () {
