@@ -1,7 +1,7 @@
 name: Publish container image
-run-name: ${{ github.workflow }} ${{ github.event_name == 'push' && '' || github.event.pull_request.title }}
+run-name: ${{ github.workflow }} - ${{ github.event_name == 'push' && github.ref_name || github.event.pull_request.title }}
 on:
-  pull_request:
+  pull_request_target:
     types:
       - opened
       - reopened
@@ -37,6 +37,7 @@ jobs:
         uses: actions/checkout@v4
         with:
           persist-credentials: false
+          ref: ${{ github.event_name == 'push' && github.ref_name || github.head_ref }}
 
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v3
