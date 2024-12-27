@@ -55,7 +55,7 @@ jobs:
         env:
           DOCKER_BUILD_SUMMARY: false
         with:
-          file: ./Dockerfile
+          file: ./Containerfile
           push: ${{ github.event_name == 'push' }}
           tags: tmatsu200/arc-custom-runner:${{ env.image-tag }}
           cache-from: type=gha
