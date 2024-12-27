@@ -42,7 +42,7 @@ for process in "${processes[@]}"; do
   fi
 done
 
-sh /home/runner/run.sh
+/bin/bash /home/runner/run.sh
 SCRIPT
 
 RUNNER_INIT_PID=$!
