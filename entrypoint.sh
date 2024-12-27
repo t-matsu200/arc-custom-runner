@@ -44,3 +44,8 @@ done
 
 sh /home/runner/run.sh
 SCRIPT
+
+RUNNER_INIT_PID=$!
+wait $RUNNER_INIT_PID
+
+trap - TERM
