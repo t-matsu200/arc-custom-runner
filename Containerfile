@@ -30,7 +30,7 @@ RUN mkdir -p /usr/libexec/docker/cli-plugins \
 # helmのインストール
 ARG HELM_VERSION=3.16.4
 RUN curl -LO "https://get.helm.sh/helm-v${HELM_VERSION}-linux-amd64.tar.gz" \
-    && tar -xz helm-v${HELM_VERSION}-linux-amd64.tar.gz \
+    && tar -xzf helm-v${HELM_VERSION}-linux-amd64.tar.gz \
     && chmod +x linux-amd64/helm \
     && mv linux-amd64/helm /usr/local/bin/ \
     && helm version \
