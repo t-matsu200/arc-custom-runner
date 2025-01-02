@@ -13,14 +13,28 @@ RUN curl -fsSL https://deb.nodesource.com/setup_lts.x | bash - \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 
+# dumb-initのインストール
+ARG DUMB_INIT_VERSION=1.2.5
+RUN curl -fLo /usr/bin/dumb-init https://github.com/Yelp/dumb-init/releases/download/v${DUMB_INIT_VERSION}/dumb-init_${DUMB_INIT_VERSION}_x86_64 \
+    && chmod +x /usr/bin/dumb-init
+
 # docker composeのインストール
-ARG DOCKER_COMPOSE_VERSION=v2.32.0
+ARG DOCKER_COMPOSE_VERSION=2.32.0
 RUN mkdir -p /usr/libexec/docker/cli-plugins \
-    && curl -fLo /usr/libexec/docker/cli-plugins/docker-compose https://github.com/docker/compose/releases/download/${DOCKER_COMPOSE_VERSION}/docker-compose-linux-x86_64 \
+    && curl -fLo /usr/libexec/docker/cli-plugins/docker-compose https://github.com/docker/compose/releases/download/v${DOCKER_COMPOSE_VERSION}/docker-compose-linux-x86_64 \
     && chmod +x /usr/libexec/docker/cli-plugins/docker-compose \
     && ln -s /usr/libexec/docker/cli-plugins/docker-compose /usr/bin/docker-compose \
     && which docker-compose \
     && docker compose version
+
+# helmのインストール
+ARG HELM_VERSION=3.16.4
+RUN curl -LO "https://get.helm.sh/helm-v${HELM_VERSION}-linux-amd64.tar.gz" \
+    && tar -xz helm-v${HELM_VERSION}-linux-amd64.tar.gz \
+    && chmod +x linux-amd64/helm \
+    && mv linux-amd64/helm /usr/local/bin/ \
+    && helm version \
+    && rm -rf linux-amd64 helm-v${HELM_VERSION}-linux-amd64.tar.gz
 
 # kubectlのインストール
 RUN curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl" \
@@ -36,11 +50,6 @@ RUN curl -LO https://github.com/kubernetes-sigs/kustomize/releases/download/kust
     && mv kustomize /usr/local/bin/ \
     && rm kustomize_v${KUSTOMIZE_VERSION}_linux_amd64.tar.gz \
     && kustomize version
-
-# dumb-initのインストール
-ARG DUMB_INIT_VERSION=1.2.5
-RUN curl -fLo /usr/bin/dumb-init https://github.com/Yelp/dumb-init/releases/download/v${DUMB_INIT_VERSION}/dumb-init_${DUMB_INIT_VERSION}_x86_64 \
-    && chmod +x /usr/bin/dumb-init
 
 COPY --chown=runner:docker --chmod=755 entrypoint.sh /usr/bin/
 
