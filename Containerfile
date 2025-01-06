@@ -13,6 +13,12 @@ RUN curl -fsSL https://deb.nodesource.com/setup_lts.x | bash - \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 
+# GihHub CLIのインストール
+RUN curl -s https://api.github.com/repos/cli/cli/releases/latest | jq .assets[].browser_download_url | grep linux_amd64.deb | xargs -I '{}' curl -sL -o /tmp/ghcli.deb '{}' \
+    && dpkg -i /tmp/ghcli.deb \
+    && rm /tmp/ghcli.deb \
+    && gh --version
+
 # dumb-initのインストール
 ARG DUMB_INIT_VERSION=1.2.5
 RUN curl -fLo /usr/bin/dumb-init https://github.com/Yelp/dumb-init/releases/download/v${DUMB_INIT_VERSION}/dumb-init_${DUMB_INIT_VERSION}_x86_64 \
