@@ -1,4 +1,4 @@
-FROM ghcr.io/actions/actions-runner:2.321.0
+FROM ghcr.io/actions/actions-runner:2.328.0
 
 USER root
 
@@ -25,7 +25,7 @@ RUN curl -fLo /usr/bin/dumb-init https://github.com/Yelp/dumb-init/releases/down
     && chmod +x /usr/bin/dumb-init
 
 # docker composeのインストール
-ARG DOCKER_COMPOSE_VERSION=2.32.0
+ARG DOCKER_COMPOSE_VERSION=2.39.2
 RUN mkdir -p /usr/libexec/docker/cli-plugins \
     && curl -fLo /usr/libexec/docker/cli-plugins/docker-compose https://github.com/docker/compose/releases/download/v${DOCKER_COMPOSE_VERSION}/docker-compose-linux-x86_64 \
     && chmod +x /usr/libexec/docker/cli-plugins/docker-compose \
@@ -34,7 +34,7 @@ RUN mkdir -p /usr/libexec/docker/cli-plugins \
     && docker compose version
 
 # helmのインストール
-ARG HELM_VERSION=3.16.4
+ARG HELM_VERSION=3.18.5
 RUN curl -LO "https://get.helm.sh/helm-v${HELM_VERSION}-linux-amd64.tar.gz" \
     && tar -xzf helm-v${HELM_VERSION}-linux-amd64.tar.gz \
     && chmod +x linux-amd64/helm \
@@ -49,7 +49,7 @@ RUN curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/s
     && kubectl version --client
 
 # kustomizeのインストール
-ARG KUSTOMIZE_VERSION=5.5.0
+ARG KUSTOMIZE_VERSION=5.7.1
 RUN curl -LO https://github.com/kubernetes-sigs/kustomize/releases/download/kustomize%2Fv${KUSTOMIZE_VERSION}/kustomize_v${KUSTOMIZE_VERSION}_linux_amd64.tar.gz \
     && tar -xzf kustomize_v${KUSTOMIZE_VERSION}_linux_amd64.tar.gz \
     && chmod +x kustomize \

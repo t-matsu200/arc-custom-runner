@@ -25,7 +25,7 @@ concurrency:
   cancel-in-progress: true
 
 env:
-  image-tag: 2.321.0
+  image-tag: 2.328.0
 
 jobs:
   publish-container-image:
