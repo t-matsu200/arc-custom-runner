@@ -13,11 +13,11 @@ RUN apt-get update -y \
       git curl wget ca-certificates unzip jq sshpass openssh-client iptables nodejs
 
 # GihHub CLIのインストール
-RUN apt-get update \
-    && GH_DEB_URL=$(curl -fsSL https://api.github.com/repos/cli/cli/releases/latest | jq -r ".assets[] | select(.name | endswith(\"linux_${TARGETARCH}.deb\")) | .browser_download_url") \
-    && curl -fsSL -o /tmp/ghcli.deb "${GH_DEB_URL}" \
-    && apt-get install -y /tmp/ghcli.deb \
-    && rm -f /tmp/ghcli.deb \
+RUN curl -fsSL https://cli.github.com/packages/githubcli-archive-keyring.gpg | tee /usr/share/keyrings/githubcli-archive-keyring.gpg > /dev/null \
+    && chmod go+r /usr/share/keyrings/githubcli-archive-keyring.gpg \
+    && echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/githubcli-archive-keyring.gpg] https://cli.github.com/packages stable main" | tee /etc/apt/sources.list.d/github-cli.list > /dev/null \
+    && apt-get update \
+    && apt-get install -y gh \
     && rm -rf /var/lib/apt/lists/* \
     && gh --version
 
@@ -40,7 +40,6 @@ RUN case ${TARGETARCH} in \
     && curl -fLo /usr/libexec/docker/cli-plugins/docker-compose https://github.com/docker/compose/releases/download/v${DOCKER_COMPOSE_VERSION}/docker-compose-linux-${COMPOSE_ARCH} \
     && chmod +x /usr/libexec/docker/cli-plugins/docker-compose \
     && ln -s /usr/libexec/docker/cli-plugins/docker-compose /usr/bin/docker-compose \
-    && which docker-compose \
     && docker compose version
 
 # helmのインストール
