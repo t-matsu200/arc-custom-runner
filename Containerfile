@@ -10,19 +10,15 @@ ARG TARGETARCH=amd64
 RUN apt-get update -y \
     && add-apt-repository -y ppa:git-core/ppa \
     && apt-get install -y --no-install-recommends \
-      git curl wget ca-certificates unzip jq sshpass openssh-client iptables
-
-# nodejsのインストール
-RUN curl -fsSL https://deb.nodesource.com/setup_lts.x | bash - \
-    && apt-get install -y nodejs \
-    && apt-get clean \
-    && rm -rf /var/lib/apt/lists/*
+      git curl wget ca-certificates unzip jq sshpass openssh-client iptables nodejs
 
 # GihHub CLIのインストール
-RUN GH_DEB_URL=$(curl -s https://api.github.com/repos/cli/cli/releases/latest | jq -r ".assets[] | select(.name | endswith(\"linux_${TARGETARCH}.deb\")) | .browser_download_url") \
-    && curl -sL -o /tmp/ghcli.deb "${GH_DEB_URL}" \
-    && dpkg -i /tmp/ghcli.deb \
-    && rm /tmp/ghcli.deb \
+RUN apt-get update \
+    && GH_DEB_URL=$(curl -fsSL https://api.github.com/repos/cli/cli/releases/latest | jq -r ".assets[] | select(.name | endswith(\"linux_${TARGETARCH}.deb\")) | .browser_download_url") \
+    && curl -fsSL -o /tmp/ghcli.deb "${GH_DEB_URL}" \
+    && apt-get install -y /tmp/ghcli.deb \
+    && rm -f /tmp/ghcli.deb \
+    && rm -rf /var/lib/apt/lists/* \
     && gh --version
 
 # dumb-initのインストール
